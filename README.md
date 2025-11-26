@@ -34,20 +34,16 @@ This setup works on any Linux distribution (Ubuntu, Debian, CentOS, RHEL, Fedora
 > Supports all major Linux distributions
 
 
-📦 Requirements
+## 📦 Requirements
 
-Linux OS
-```
-wget, tar, and systemd
-```
-Port access:
-```
-9100 – Node Exporter
+- 🐧 **Linux Server** (Ubuntu, Debian, CentOS, RHEL, Fedora)
+- 🌐 **Internet Access** for downloading packages
+- 🧰 **Tools Installed:** `wget`, `tar`, `systemctl`
+- 🔒 **Open Ports Required:**
+  - 9100 → Node Exporter
+  - 9090 → Prometheus
+  - 3000 → Grafana
 
-9090 – Prometheus
-
-3000 – Grafana
-```
 🛠 Installation Steps (No Docker)
 1. Install Node Exporter
 Download and extract:
