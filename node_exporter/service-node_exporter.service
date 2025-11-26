@@ -1,0 +1,42 @@
+service-node_exporter.service
+```
+[Unit]
+Description=Node Exporter
+Documentation=https://github.com/prometheus/node_exporter
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+
+# Binary path (installed in /usr/local/bin)
+ExecStart=/usr/local/bin/node_exporter
+
+# Security Hardening
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+ProtectKernelModules=true
+
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+
+📌 Notes
+✔ Works instantly with:
+```
+systemctl daemon-reload
+systemctl enable node_exporter
+systemctl start node_exporter
+```
+✔ Exposes metrics at:
+```
+http://localhost:9100/metrics
+```
