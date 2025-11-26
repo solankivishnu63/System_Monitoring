@@ -1,5 +1,5 @@
-**📊 Linux Monitoring Stack**
 Prometheus + Node Exporter + Grafana (No Docker)
+<p align="center"> <img src="https://img.shields.io/badge/Prometheus-Monitoring-orange?logo=prometheus"> <img src="https://img.shields.io/badge/Grafana-Dashboards-yellow?logo=grafana"> <img src="https://img.shields.io/badge/Linux-Server-green?logo=linux"> </p>
 
 This repository provides a complete guide and configuration for setting up a Linux monitoring stack without Docker, using:
 
