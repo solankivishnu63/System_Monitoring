@@ -13,19 +13,26 @@ Grafana → Visual dashboards
 
 This setup works on any Linux distribution (Ubuntu, Debian, CentOS, RHEL, Fedora, etc.).
 
-🚀 Features
+## 🚀 Features
 
-Lightweight, production-ready monitoring stack
+> ### ✔️ Real-Time Insights  
+> Live CPU, Memory, Disk, and Network monitoring
 
-CPU, memory, disk, network & hardware metrics via Node Exporter
+> ### ✔️ Beautiful Dashboards  
+> Rich Grafana visualizations included
 
-Prometheus stores and queries metrics
+> ### ✔️ Lightweight Monitoring  
+> Node Exporter + Prometheus use minimal resources
 
-Grafana visualizes detailed dashboards
+> ### ✔️ Secure Services  
+> Runs under dedicated Linux users with systemd
 
-Works entirely without Docker
+> ### ✔️ Easy Installation  
+> Straightforward copy-paste setup
 
-Configurable systemd services for automatic startup
+> ### ✔️ Works Everywhere  
+> Supports all major Linux distributions
+
 
 📦 Requirements
 
