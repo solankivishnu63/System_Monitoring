@@ -1,0 +1,22 @@
+linux-monitoring/
+│
+├── README.md
+├── prometheus/
+│   ├── prometheus.yml
+│   ├── nodes.json (optional)
+│   └── service-prometheus.service
+│
+├── node_exporter/
+│   └── service-node_exporter.service
+│
+├── grafana/
+│   ├── datasources.json
+│   └── dashboards/
+│       ├── system-overview.json
+│       └── cpu-memory.json
+│
+└── scripts/
+    ├── install_prometheus.sh
+    ├── install_node_exporter.sh
+    ├── install_grafana.sh
+    └── health-check.sh
