@@ -1,5 +1,5 @@
 service-node_exporter.service
-
+```ini
 [Unit]
 Description=Node Exporter
 Documentation=https://github.com/prometheus/node_exporter
@@ -27,7 +27,7 @@ Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
-
+```
 📌 Notes
 ✔ Works instantly with:
 
