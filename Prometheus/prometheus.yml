@@ -1,4 +1,4 @@
-```yaml
+
 # ==========================================================
 # Prometheus Main Configuration
 # For Linux Monitoring (Prometheus + Node Exporter + Grafana)
@@ -45,4 +45,3 @@ scrape_configs:
 #
 # rule_files:
 #   - "/etc/prometheus/alert-rules.yml"
-```
