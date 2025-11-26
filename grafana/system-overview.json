@@ -1,0 +1,162 @@
+{
+  "id": null,
+  "uid": "system-overview",
+  "title": "Linux System Overview",
+  "tags": ["system", "node_exporter", "linux", "overview"],
+  "timezone": "browser",
+  "schemaVersion": 36,
+  "version": 1,
+  "refresh": "5s",
+
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Uptime",
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+      "datasource": { "type": "prometheus", "uid": "prometheus-ds" },
+      "targets": [
+        {
+          "expr": "node_time_seconds - node_boot_time_seconds",
+          "legendFormat": "uptime"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["last"], "fields": "", "values": false },
+        "orientation": "horizontal",
+        "graphMode": "none",
+        "colorMode": "value"
+      }
+    },
+
+    {
+      "type": "gauge",
+      "title": "CPU Usage (%)",
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+      "datasource": { "type": "prometheus", "uid": "prometheus-ds" },
+      "targets": [
+        {
+          "expr": "100 - (avg by(instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+          "legendFormat": "CPU Usage"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["last"] },
+        "orientation": "horizontal",
+        "min": 0,
+        "max": 100
+      }
+    },
+
+    {
+      "type": "gauge",
+      "title": "Memory Usage (%)",
+      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
+      "datasource": { "uid": "prometheus-ds", "type": "prometheus" },
+      "targets": [
+        {
+          "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+          "legendFormat": "Memory"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["last"] },
+        "min": 0,
+        "max": 100
+      }
+    },
+
+    {
+      "type": "gauge",
+      "title": "Disk Usage (%)",
+      "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
+      "datasource": { "uid": "prometheus-ds", "type": "prometheus" },
+      "targets": [
+        {
+          "expr": "(1 - (node_filesystem_avail_bytes{mountpoint=\"/\",fstype!=\"rootfs\"} / node_filesystem_size_bytes{mountpoint=\"/\"})) * 100",
+          "legendFormat": "Disk"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["last"] },
+        "min": 0,
+        "max": 100
+      }
+    },
+
+    {
+      "type": "graph",
+      "title": "CPU Load (1m, 5m, 15m)",
+      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 6 },
+      "datasource": { "uid": "prometheus-ds" },
+      "targets": [
+        { "expr": "node_load1", "legendFormat": "1m Load" },
+        { "expr": "node_load5", "legendFormat": "5m Load" },
+        { "expr": "node_load15", "legendFormat": "15m Load" }
+      ]
+    },
+
+    {
+      "type": "graph",
+      "title": "Network Traffic (MB/s)",
+      "gridPos": { "x": 12, "y": 4, "w": 12, "h": 6 },
+      "datasource": { "uid": "prometheus-ds" },
+      "targets": [
+        {
+          "expr": "rate(node_network_receive_bytes_total[5m]) / 1024 / 1024",
+          "legendFormat": "{{device}} RX"
+        },
+        {
+          "expr": "rate(node_network_transmit_bytes_total[5m]) / 1024 / 1024",
+          "legendFormat": "{{device}} TX"
+        }
+      ]
+    },
+
+    {
+      "type": "graph",
+      "title": "Disk I/O (MB/s)",
+      "gridPos": { "x": 0, "y": 10, "w": 12, "h": 6 },
+      "datasource": { "uid": "prometheus-ds" },
+      "targets": [
+        {
+          "expr": "rate(node_disk_reads_completed_total[5m])",
+          "legendFormat": "{{device}} Reads"
+        },
+        {
+          "expr": "rate(node_disk_writes_completed_total[5m])",
+          "legendFormat": "{{device}} Writes"
+        }
+      ]
+    },
+
+    {
+      "type": "stat",
+      "title": "Node Exporter Status",
+      "gridPos": { "x": 12, "y": 10, "w": 12, "h": 4 },
+      "datasource": { "uid": "prometheus-ds" },
+      "targets": [
+        {
+          "expr": "up{job=\"node_exporter\"}",
+          "legendFormat": "Status"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["last"] },
+        "colorMode": "background",
+        "textMode": "value",
+        "color": {
+          "mode": "thresholds"
+        }
+      },
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          { "color": "red", "value": 0 },
+          { "color": "green", "value": 1 }
+        ]
+      }
+    }
+  ],
+
+  "templating": { "list": [] }
+}
