@@ -1,239 +1,103 @@
+📊 Linux Monitoring Setup
 Prometheus + Node Exporter + Grafana (No Docker)
-<p align="center"> <img src="https://img.shields.io/badge/Prometheus-Monitoring-orange?logo=prometheus"> <img src="https://img.shields.io/badge/Grafana-Dashboards-yellow?logo=grafana"> <img src="https://img.shields.io/badge/Linux-Server-green?logo=linux"> </p>
+<p align="center"> <img src="https://img.shields.io/badge/Linux-Monitoring-0078D4?style=for-the-badge&logo=linux&logoColor=white" /> <img src="https://img.shields.io/badge/Prometheus-Metrics-E6522C?style=for-the-badge&logo=prometheus&logoColor=white" /> <img src="https://img.shields.io/badge/Grafana-Dashboard-F46800?style=for-the-badge&logo=grafana&logoColor=white" /> <img src="https://img.shields.io/badge/Node%20Exporter-System%20Stats-2E8B57?style=for-the-badge" /> <img src="https://img.shields.io/badge/Bash-Scripting-4EAA25?style=for-the-badge&logo=gnubash&logoColor=white" /> </p>
 
-This repository provides a complete guide and configuration for setting up a Linux monitoring stack without Docker, using:
+This repository provides a complete Linux server monitoring stack using native binaries and systemd services.
 
-```bash
-Node Exporter → Collect system metrics
+🖼️ Screenshots
 
-Prometheus → Store & scrape metrics
+Replace the placeholder image links with your actual screenshots.
 
-Grafana → Visual dashboards
-```
+📈 Grafana Dashboard
 
-This setup works on any Linux distribution (Ubuntu, Debian, CentOS, RHEL, Fedora, etc.).
+📡 Prometheus Targets
 
-## 🚀 Features
+💻 Node Exporter Metrics
 
-> ### ✔️ Real-Time Insights  
-> Live CPU, Memory, Disk, and Network monitoring
+⚡ One-Click Installer (FULL STACK)
 
-> ### ✔️ Beautiful Dashboards  
-> Rich Grafana visualizations included
-
-> ### ✔️ Lightweight Monitoring  
-> Node Exporter + Prometheus use minimal resources
-
-> ### ✔️ Secure Services  
-> Runs under dedicated Linux users with systemd
-
-> ### ✔️ Easy Installation  
-> Straightforward copy-paste setup
-
-> ### ✔️ Works Everywhere  
-> Supports all major Linux distributions
-
-
-## 📦 Requirements
-
-- 🐧 **Linux Server** (Ubuntu, Debian, CentOS, RHEL, Fedora)
-- 🌐 **Internet Access** for downloading packages
-- 🧰 **Tools Installed:** `wget`, `tar`, `systemctl`
-- 🔒 **Open Ports Required:**
-  - 9100 → Node Exporter
-  - 9090 → Prometheus
-  - 3000 → Grafana
-
-🛠 Installation Steps (No Docker)
-1. Install Node Exporter
-Download and extract:
-```bash
-cd /opt
-sudo wget https://github.com/prometheus/node_exporter/releases/latest/download/node_exporter-1.8.1.linux-amd64.tar.gz
-sudo tar -xvf node_exporter-*.tar.gz
-sudo mv node_exporter-*/ node_exporter
-```
-
-Create system user:
-
-```sudo useradd --no-create-home --shell /bin/false node_exporter```
-
-Create systemd service:
-```
-sudo tee /etc/systemd/system/node_exporter.service <<EOF
-[Unit]
-Description=Node Exporter
-After=network.target
-
-[Service]
-User=node_exporter
-ExecStart=/opt/node_exporter/node_exporter
-
-[Install]
-WantedBy=default.target
-EOF
-
-Start and enable:
-sudo systemctl daemon-reload
-sudo systemctl start node_exporter
-sudo systemctl enable node_exporter
-```
-
-2. Install Prometheus
-Create user:
-```
-sudo useradd --no-create-home --shell /bin/false prometheus
-```
-Download & extract:
-```cd /opt
-sudo wget https://github.com/prometheus/prometheus/releases/latest/download/prometheus-*.linux-amd64.tar.gz
-sudo tar -xvf prometheus-*.tar.gz
-sudo mv prometheus-*/ prometheus
-```
-
-Create directories:
-```
-sudo mkdir /etc/prometheus
-sudo mkdir /var/lib/prometheus
-```
-
-Copy configuration files:
-```
-sudo cp /opt/prometheus/prometheus.yml /etc/prometheus/
-sudo cp /opt/prometheus/consoles/ /etc/prometheus/ -r
-sudo cp /opt/prometheus/console_libraries/ /etc/prometheus/ -r
-```
-Set permissions:
-```
-sudo chown -R prometheus:prometheus /etc/prometheus /var/lib/prometheus
-sudo chown -R prometheus:prometheus /opt/prometheus
-```
-3. Prometheus Configuration
-
-Use this minimal prometheus.yml:
+Create a script named install_all.sh, or put this directly in README for users:
 
 ```
-global:
-  scrape_interval: 5s
-
-scrape_configs:
-  - job_name: "node_exporter"
-    static_configs:
-      - targets: ["localhost:9100"]
-
-```
-Save as:
-
-```
-/etc/prometheus/prometheus.yml
-```
-4. Create Prometheus systemd service
-```
-sudo tee /etc/systemd/system/prometheus.service <<EOF
-[Unit]
-Description=Prometheus Monitoring
-Wants=network-online.target
-After=network-online.target
-
-[Service]
-User=prometheus
-ExecStart=/opt/prometheus/prometheus \
-  --config.file=/etc/prometheus/prometheus.yml \
-  --storage.tsdb.path=/var/lib/prometheus \
-  --web.console.templates=/etc/prometheus/consoles \
-  --web.console.libraries=/etc/prometheus/console_libraries
-
-Restart=always
-
-[Install]
-WantedBy=default.target
-EOF
+curl -s https://raw.githubusercontent.com/yourrepo/linux-monitoring/main/scripts/install_all.sh | sudo bash
 ```
 
-Start services:
-```
-sudo systemctl daemon-reload
-sudo systemctl start prometheus
-sudo systemctl enable prometheus
-```
-5. Install Grafana
-Install repository and package:
+
+Here is the install_all.sh content (add into your scripts/ folder):
 
 ```
-Ubuntu / Debian
+#!/bin/bash
+echo "🚀 Starting full monitoring stack installation..."
 
-sudo apt-get install -y apt-transport-https software-properties-common wget
-wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
-echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
-sudo apt update
-sudo apt install grafana -y
+bash scripts/install_prometheus.sh
+bash scripts/install_node_exporter.sh
+bash scripts/install_grafana.sh
 
-
-CentOS / RHEL
-
-sudo tee /etc/yum.repos.d/grafana.repo <<EOF
-[grafana]
-name=Grafana OSS
-baseurl=https://packages.grafana.com/oss/rpm
-repo_gpgcheck=1
-enabled=1
-gpgcheck=1
-gpgkey=https://packages.grafana.com/gpg.key
-EOF
-sudo yum install grafana -y
+echo "🎉 Installation complete!"
+echo "📍 Grafana → http://localhost:3000"
+echo "📍 Prometheus → http://localhost:9090"
+echo "📍 Node Exporter → http://localhost:9100/metrics"
 ```
-Start Grafana:
+
+
+Make it executable:
+
 ```
-sudo systemctl start grafana-server
-sudo systemctl enable grafana-server
+chmod +x scripts/install_all.sh
 ```
-📊 Accessing the Monitoring Tools
-Tool	URL	Notes
-Node Exporter
+📁 Project Structure
 ```
-http://localhost:9100/metrics
+📦 linux-monitoring
+ ┣ 📄 README.md
+ ┣ 📁 prometheus
+ ┃ ┣ 📄 prometheus.yml
+ ┃ ┗ 📄 service-prometheus.service
+ ┣ 📁 node_exporter
+ ┃ ┗ 📄 service-node_exporter.service
+ ┣ 📁 grafana
+ ┃ ┣ 📄 datasources.json
+ ┃ ┗ 📁 dashboards
+ ┃   ┗ 📄 system-overview.json
+ ┗ 📁 scripts
+   ┣ 📄 install_prometheus.sh
+   ┣ 📄 install_node_exporter.sh
+   ┣ 📄 install_grafana.sh
+   ┣ 📄 health-check.sh
+   ┗ 📄 install_all.sh
 ```
-Raw server metrics
-Prometheus	
+
+🛠 Installation (Manual)
+1️⃣ Install Prometheus
 ```
-http://localhost:9090
+sudo bash scripts/install_prometheus.sh
 ```
-Query metrics
-Grafana
+
+2️⃣ Install Node Exporter
 ```
-http://localhost:3000
-Login: admin / admin
+sudo bash scripts/install_node_exporter.sh
 ```
-📘 Grafana Configuration
-
-After login:
-
-Go to Configuration → Data Sources
-
-Add Prometheus
-
-URL → ```http://localhost:9090```
-
-Save & Test
-
-Import recommended dashboards:
-Dashboard	ID
-Node Exporter Full	1860
-Linux System Dashboard	11074
-🔍 Usage
-Verify Node Exporter is running:
+3️⃣ Install Grafana
 ```
-systemctl status node_exporter
+sudo bash scripts/install_grafana.sh
 ```
-Check Prometheus targets:
+🌐 Access URLs
+Service	URL
+Prometheus	http://localhost:9090
 
-Visit:
+Prometheus Targets	http://localhost:9090/targets
 
-```http://localhost:9090/targets```
+Node Exporter Metrics	http://localhost:9100/metrics
 
-Open Grafana and visualize metrics:
-```http://localhost:3000```
+Grafana	http://localhost:3000
+🧪 Health Check
+```
+bash scripts/health-check.sh
+```
 
-🤝 Contributing
+🙌 Contributing
 
-Feel free to open PRs for additional exporters, dashboards, or improvements
+PRs welcome. Feel free to add dashboards, exporters, or automation scripts.
+
+🛡 License
+
+MIT License — free to use and modify.
